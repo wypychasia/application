@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>License Manager Application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> </meta>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        </head>
+<body>
+<div class="container">
+    <div class="jumbotron-text-center">
+        <center>
+            <h1>License Manager Application</h1>
+            <p><i>Application by Joanna Wypych, 2017</i></p>
+        </center>
+    </div>
+    <center>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default"><a th:href="@{/home}">Home</a> </button>
+            <button type="button" class="btn btn-default"><a th:href="@{/company}">Company</a> </button>
+            <button type="button" class="btn btn-default"><a th:href="@{/ownedproducts}">Owned Products</a> </button>
+            <button type="button" class="btn btn-default"><a th:href="@{/avalibleProducts}">Other Products</a></button>
+        </div>
+    </center>
+    <center><h2>Owned products:</h2></center>
+    <div class="row">
+        <div class="col-sm-4" th:each="product : ${ownedProducts}">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 th:text ="${product.productName}"></h3>
+                </div>
+                <div class="panel-body">
+                    <p><b>Product Version:  </b><span th:text ="${product.productVersion}"></span></p>
+                    <p><b>Product Modules:  </b></p>
+                    <div th:with="condition=${product.programModules.isEmpty()}">
+                        <span th:unless="${condition}">
+                            <span style="list-style-type:none" th:each="module: ${product.programModules}">
+                                <p th:text ="${module.moduleName}"></p>
+                            </span>
+                        </span>
+                        <span th:if="${condition}">
+                            <p>This product doesn't have any modules</p>
+                        </span>
+                    </div>
+                    <p><b>Stations:  </b><span th:text ="${product.stations}"></span>
+                        <button type="button" class="btn btn-default btn-xs" onclick="">Get another</button>
+                   </p>
+                    <p><b>Codes:  </b></p>
+                    <option th:each="i: ${#numbers.sequence(1,product.stations)}">
+                        <div th:with="con=${product.programCodes.isEmpty()}">
+                            <span th:unless="${con}">
+                                <p th:text ="'Station '+${i}+': '+${product.programCodes.get(i-1).codeContent}"></p>
+                            </span>
+                        <span th:if="${con}">
+                            <p th:text="'Station '+${i}+': This product doesn\'t have any codes'"></p>
+                        </span>
+                        </div>
+                        <br/>
+                    </option>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <center>
+            <form th:action="@{/logout}" method="post">
+                <h4 th:inline="text">Logged as: [[${#httpServletRequest.remoteUser}]]
+                <input type="submit" class="btn btn-default" value="Sign Out"/>
+                </h4>
+            </form>
+        </center>
+    </div>
+</div>
+</body>
+</html>
